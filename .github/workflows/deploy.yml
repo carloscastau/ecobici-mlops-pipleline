@@ -17,14 +17,15 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-2 # Corregido
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and push Docker image
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com
+          # Corregido la URL del registro a us-east-2
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-2.amazonaws.com
           IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/ecobici-inference:$IMAGE_TAG .
@@ -32,7 +33,9 @@ jobs:
 
       - name: Update Lambda function
         run: |
+          # Corregido la URL de la imagen a us-east-2
           aws lambda update-function-code \
             --function-name ecobici-inference \
-            --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/ecobici-inference:latest \
+            --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-2.amazonaws.com/ecobici-inference:latest \
+            --region us-east-2 \
             --publish
