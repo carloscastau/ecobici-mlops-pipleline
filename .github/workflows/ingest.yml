@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas boto3 requests
+          pip install boto3 requests
 
       - name: Run ingest script
         env:
